@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<!-- Copyright © Klevu Oy. All rights reserved. See LICENSE.txt for license details. -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <klevu_frontend>
+            <quick_search>
+                <enabled>0</enabled>
+                <search_box_selector><![CDATA[input[type=text][name=q],input[type=search][name=q]]]></search_box_selector>
+                <search_query_parameter><![CDATA[q]]></search_query_parameter>
+            </quick_search>
+            <srlp>
+                <theme>0</theme>
+            </srlp>
+            <developer>
+                <log_level_frontend>200</log_level_frontend>
+            </developer>
+        </klevu_frontend>
+    </default>
+</config>

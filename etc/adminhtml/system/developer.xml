@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!-- Copyright © Klevu Oy. All rights reserved. See LICENSE.txt for license details. -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="frontend">
+        <field id="search_box_selector"
+               translate="label comment"
+               sortOrder="100"
+               type="text"
+               showInDefault="1"
+               showInWebsite="1"
+               showInStore="1">
+            <config_path>klevu_frontend/quick_search/search_box_selector</config_path>
+            <label>Search Box Selector</label>
+            <comment><![CDATA[The id, class, or handle used to bind the search input field. JSv2 setting <code>search.searchBoxSelector</code>.]]></comment>
+            <validate>validate-no-empty</validate>
+        </field>
+
+        <field id="search_query_parameter"
+               translate="label comment"
+               sortOrder="110"
+               type="text"
+               showInDefault="1"
+               showInWebsite="1"
+               showInStore="1">
+            <config_path>klevu_frontend/quick_search/search_query_parameter</config_path>
+            <label>Search Query Parameter</label>
+            <comment><![CDATA[The parameter used on query pages. JSv2 setting <code>url.queryParam</code>.]]></comment>
+            <validate>validate-no-empty alphanumeric</validate>
+        </field>
+    </group>
+</config>

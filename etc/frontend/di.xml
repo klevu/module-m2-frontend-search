@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+
+<!-- Copyright © Klevu Oy. All rights reserved. See LICENSE.txt for license details. -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Klevu\FrontendSearch\Service\Provider\QueryTextProviderInterface"
+                type="Klevu\FrontendSearch\Service\Provider\QueryTextProvider"/>
+
+    <preference for="Klevu\FrontendSearch\Service\Provider\ThemeProviderInterface"
+                type="Klevu\FrontendSearch\Service\Provider\ThemeProvider"/>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider"
+                 type="Klevu\Frontend\Service\Provider\SettingsProvider">
+        <arguments>
+            <argument name="configSettingPath"
+                      xsi:type="const">Klevu\FrontendSearch\Constants::XML_PATH_QUICK_ENABLED</argument>
+            <argument name="returnType"
+                      xsi:type="const">Klevu\Frontend\Model\Config\Source\KlevuCustomOptionsTypeSource::TYPE_VALUE_BOOLEAN</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\MinCharsProvider"
+                 type="Klevu\Frontend\Service\Provider\SettingsProvider">
+        <arguments>
+            <argument name="configSettingPath"
+                      xsi:type="const">Magento\Search\Model\Query::XML_PATH_MIN_QUERY_LENGTH</argument>
+            <argument name="customSettingsPath" xsi:type="string">search.minChars</argument>
+            <argument name="returnType"
+                      xsi:type="const">Klevu\Frontend\Model\Config\Source\KlevuCustomOptionsTypeSource::TYPE_VALUE_INTEGER</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\MaxCharsProvider"
+                 type="Klevu\Frontend\Service\Provider\SettingsProvider">
+        <arguments>
+            <argument name="configSettingPath"
+                      xsi:type="const">Magento\Search\Model\Query::XML_PATH_MAX_QUERY_LENGTH</argument>
+            <argument name="customSettingsPath" xsi:type="string">search.maxChars</argument>
+            <argument name="returnType"
+                      xsi:type="const">Klevu\Frontend\Model\Config\Source\KlevuCustomOptionsTypeSource::TYPE_VALUE_INTEGER</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\QueryParameterProvider"
+                 type="Klevu\Frontend\Service\Provider\SettingsProvider">
+        <arguments>
+            <argument name="configSettingPath"
+                      xsi:type="const">Klevu\FrontendSearch\Constants::XML_PATH_SEARCH_PARAMETER</argument>
+            <argument name="customSettingsPath" xsi:type="string">url.queryParam</argument>
+            <argument name="returnType"
+                      xsi:type="const">Klevu\Frontend\Model\Config\Source\KlevuCustomOptionsTypeSource::TYPE_VALUE_STRING</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\SearchBoxSelectorProvider"
+                 type="Klevu\Frontend\Service\Provider\SettingsProvider">
+        <arguments>
+            <argument name="configSettingPath"
+                      xsi:type="const">Klevu\FrontendSearch\Constants::XML_PATH_SEARCH_BOX_SELECTOR</argument>
+            <argument name="customSettingsPath" xsi:type="string">search.searchBoxSelector</argument>
+            <argument name="returnType"
+                      xsi:type="const">Klevu\Frontend\Model\Config\Source\KlevuCustomOptionsTypeSource::TYPE_VALUE_STRING</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Klevu\Frontend\Service\KlevuSettingsBuilder">
+        <arguments>
+            <argument name="klevuSettings" xsi:type="array">
+                <item name="url" xsi:type="array">
+                    <item name="search"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\SearchUrlProvider</item>
+                    <item name="landing"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\LandingUrlProvider</item>
+                    <item name="queryParam"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\QueryParameterProvider</item>
+                </item>
+                <item name="search" xsi:type="array">
+                    <item name="minChars"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\MinCharsProvider</item>
+                    <item name="maxChars"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\MaxCharsProvider</item>
+                    <item name="searchBoxSelector"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\SearchBoxSelectorProvider</item>
+                </item>
+            </argument>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_integrated"
+                      xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\Frontend\Service\Provider\Layout\RelLinkProvider">
+        <arguments>
+            <argument name="links" xsi:type="array">
+                <item name="preconnect_klevu_core" xsi:type="array">
+                    <item name="is_enabled_conditions" xsi:type="array">
+                        <item name="klevu_modules_enabled" xsi:type="array">
+                            <item name="klevu_quick_enabled"
+                                  xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                            <item name="klevu_srlp_enabled"
+                                  xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                        </item>
+                    </item>
+                </item>
+                <item name="preconnect_klevu_search" xsi:type="array">
+                    <item name="path"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\SearchUrlProvider</item>
+                    <item name="type" xsi:type="string">preconnect</item>
+                    <item name="is_enabled_conditions" xsi:type="array">
+                        <item name="klevu_integrated"
+                              xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                        <item name="klevu_modules_enabled" xsi:type="array">
+                            <item name="klevu_quick_enabled"
+                                  xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                            <item name="klevu_srlp_enabled"
+                                  xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Klevu\FrontendSearch\ViewModel\Html\Head\JsIncludesQuick"
+                 type="Klevu\Frontend\ViewModel\Html\Head\JsIncludes">
+        <arguments>
+            <argument name="jsIncludes" xsi:type="array">
+                <item name="quick" xsi:type="array">
+                    <item name="before" xsi:type="string">-</item>
+                    <item name="provider"
+                          xsi:type="object">Klevu\Frontend\Service\Provider\Urls\JsUrlProvider</item>
+                    <item name="path" xsi:type="string"><![CDATA[theme/default/v2/quick-search-theme.lazyload.js]]></item>
+                    <item name="is_enabled_conditions" xsi:type="array">
+                        <item name="klevu_integrated"
+                              xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                        <item name="klevu_quick_enabled"
+                              xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\ViewModel\Html\Head\JsIncludesLanding"
+                 type="Klevu\Frontend\ViewModel\Html\Head\JsIncludes">
+        <arguments>
+            <argument name="jsIncludes" xsi:type="array">
+                <item name="landing" xsi:type="array">
+                    <item name="before" xsi:type="string">-</item>
+                    <item name="provider"
+                          xsi:type="object">Klevu\Frontend\Service\Provider\Urls\JsUrlProvider</item>
+                    <item name="path" xsi:type="string"><![CDATA[/theme/default/v2/landing-page-theme.js]]></item>
+                    <item name="is_enabled_conditions" xsi:type="array">
+                        <item name="klevu_integrated"
+                              xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                        <item name="klevu_srlp_enabled"
+                              xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Klevu\FrontendSearch\Service\Provider\QueryTextProvider">
+        <arguments>
+            <argument name="queryParameterProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\QueryParameterProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\FrontendSearch\Observer\UpdateSearchResultsPageLayout">
+        <arguments>
+            <argument name="landingUrlProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\LandingUrlProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\FrontendSearch\Service\Provider\LandingUrlProvider">
+        <arguments>
+            <argument name="controllerName" xsi:type="string">result</argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition">
+        <arguments>
+            <argument name="quickSearchEnabledProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\Frontend\ViewModel\Html\Head\AddToCart">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Klevu\Frontend\ViewModel\Html\Head\JsIncludesCore"
+                 type="Klevu\Frontend\ViewModel\Html\Head\JsIncludes">
+        <arguments>
+            <argument name="jsIncludes" xsi:type="array">
+                <item name="core" xsi:type="array">
+                    <item name="is_enabled_conditions" xsi:type="array">
+                        <item name="klevu_modules_enabled" xsi:type="array">
+                            <item name="klevu_quick_enabled"
+                                  xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                            <item name="klevu_srlp_enabled"
+                                  xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Klevu\Frontend\ViewModel\CurrencyConversion">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\Frontend\ViewModel\VisibilityFilter">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\RequireJs\Config\File\Collector\Aggregated">
+        <plugin name="Klevu_FrontendSearch::RequireJsConfigFileCollectorAggregatedPlugin"
+                type="Klevu\FrontendSearch\Plugin\RequireJs\Config\File\Collector\AggregatedPlugin"/>
+    </type>
+
+    <type name="Klevu\FrontendSearch\Plugin\RequireJs\Config\File\Collector\AggregatedPlugin">
+        <arguments>
+            <argument name="quickSearchEnabledProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider</argument>
+        </arguments>
+    </type>
+
+</config>
