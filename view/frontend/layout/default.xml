@@ -5,11 +5,10 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="head.additional">
-            <block name="Klevu_Frontend.js_includes.search"
-                   template="Klevu_Frontend::html/head/js_includes.phtml"
-                   before="-"
-                   after="Klevu_Frontend.js_settings">
+        <referenceBlock name="before.body.end">
+            <block name="Klevu_Frontend.js_includes_defer.search"
+                   template="Klevu_Frontend::html/head/js_includes_defer.phtml"
+                   before="-">
                 <arguments>
                     <argument name="js_includes_view_model"
                               xsi:type="object">Klevu\FrontendSearch\ViewModel\Html\Head\JsIncludesQuick</argument>

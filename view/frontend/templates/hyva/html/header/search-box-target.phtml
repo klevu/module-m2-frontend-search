@@ -1,0 +1,39 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Klevu\FrontendSearch\ViewModel\Html\Head\SearchBoxTarget;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+/**
+ * @var SecureHtmlRenderer $secureRenderer
+ * @var ViewModelRegistry $viewModels
+ * @var SearchBoxTarget $klevuSearchBoxTarget
+ */
+$klevuSearchBoxTarget = $viewModels->require(SearchBoxTarget::class);
+$klevuSearchBoxTargetId = $klevuSearchBoxTarget->getSearchBoxTargetId();
+?>
+
+<?php if ($klevuSearchBoxTargetId): ?>
+    <?php
+    $scriptString = <<<script
+
+    klevu.interactive(function () {
+        const searchBoxTarget = document.getElementById('$klevuSearchBoxTargetId');
+        if ("undefined" !== typeof searchBoxTarget && searchBoxTarget) {
+            let options = {};
+            klevu.setObjectPath(options, 'search.searchBoxTarget', searchBoxTarget);
+            klevu(options);
+        }
+    });
+
+script;
+    ?>
+
+    <?= $secureRenderer->renderTag(
+        tagName: 'script',
+        attributes: ['type' => 'text/javascript'],
+        content: $scriptString,
+        textContent: false
+    ) ?>
+
+<?php endif ;?>
