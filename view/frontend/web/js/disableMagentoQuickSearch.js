@@ -9,15 +9,6 @@ define([
          */
 
         /**
-         * Stop Magento auto-suggest from firing
-         *
-         * @private
-         */
-        _init: function () {
-            this.options.minSearchLength = 999;
-        },
-
-        /**
          * Executes when keys are pressed in the search input field. Performs specific actions
          * depending on which keys are pressed.
          *

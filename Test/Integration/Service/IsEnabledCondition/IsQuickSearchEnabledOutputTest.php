@@ -36,7 +36,10 @@ class IsQuickSearchEnabledOutputTest extends AbstractController
     /**
      * @var string
      */
-    private string $pattern = '#<script[.\s]*type="text&\#x2F;javascript"[.\s]*src="https&\#x3A;&\#x2F;&\#x2F;js\.klevu\.com&\#x2F;theme&\#x2F;default&\#x2F;v2&\#x2F;quick-search-theme.lazyload\.js"[.\s]*>[.\s]*</script>#'; // phpcs:ignore Generic.Files.LineLength.TooLong
+    private string $pattern = "#const script = document.createElement\('script'\);"
+        . "\s*script\.src\s*=\s*'https:\/\/js\.klevu\.com\/theme\/default\/v2\/quick-search-theme\.js'\;"
+        . "\s*script\.type = 'text\/javascript'\;"
+        . "\s*document\.head\.append\(script\);#";
     /**
      * @var ObjectManagerInterface|null
      */

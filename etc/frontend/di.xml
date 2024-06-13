@@ -65,6 +65,15 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\SearchBoxTargetProvider"
+                 type="Klevu\Frontend\Service\Provider\SettingsProvider">
+        <arguments>
+            <argument name="customSettingsPath" xsi:type="string">search.searchBoxTarget</argument>
+            <argument name="returnType"
+                      xsi:type="const">Klevu\Frontend\Model\Config\Source\KlevuCustomOptionsTypeSource::TYPE_VALUE_STRING</argument>
+        </arguments>
+    </virtualType>
+
     <type name="Klevu\Frontend\Service\KlevuSettingsBuilder">
         <arguments>
             <argument name="klevuSettings" xsi:type="array">
@@ -138,7 +147,7 @@
                     <item name="before" xsi:type="string">-</item>
                     <item name="provider"
                           xsi:type="object">Klevu\Frontend\Service\Provider\Urls\JsUrlProvider</item>
-                    <item name="path" xsi:type="string"><![CDATA[theme/default/v2/quick-search-theme.lazyload.js]]></item>
+                    <item name="path" xsi:type="string"><![CDATA[theme/default/v2/quick-search-theme.js]]></item>
                     <item name="is_enabled_conditions" xsi:type="array">
                         <item name="klevu_integrated"
                               xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
@@ -263,6 +272,32 @@
         <arguments>
             <argument name="quickSearchEnabledProvider"
                       xsi:type="object">Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\CatalogSearch\Model\Autocomplete\DataProvider">
+        <plugin name="Klevu_FrontendSearch::CatalogSearchModelAutocompleteDataProviderPlugin"
+                type="Klevu\FrontendSearch\Plugin\CatalogSearch\Model\Autocomplete\DataProviderPlugin"/>
+    </type>
+
+    <type name="Klevu\FrontendSearch\Plugin\CatalogSearch\Model\Autocomplete\DataProviderPlugin">
+        <arguments>
+            <argument name="quickSearchEnabledProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\FrontendSearch\ViewModel\Html\Head\SearchForm">
+        <arguments>
+            <argument name="quickSearchEnabledProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Klevu\FrontendSearch\ViewModel\Html\Head\SearchBoxTarget">
+        <arguments>
+            <argument name="searchBoxTargetProvider"
+                      xsi:type="object">Klevu\FrontendSearch\Service\Provider\SearchBoxTargetProvider</argument>
         </arguments>
     </type>
 

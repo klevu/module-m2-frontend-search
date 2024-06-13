@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!-- Copyright © Klevu Oy. All rights reserved. See LICENSE.txt for license details. -->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="header-search"
+              template="Klevu_FrontendSearch::hyva/html/header/search-form.phtml"/>
+        <referenceBlock name="klevu_frontend.init_before">
+            <block name="klevu_frontend.quick-search.search_box_target"
+                   template="Klevu_FrontendSearch::hyva/html/header/search-box-target.phtml"
+                   before="-" />
+        </referenceBlock>
+    </body>
+</page>
