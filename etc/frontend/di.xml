@@ -77,6 +77,12 @@
     <type name="Klevu\Frontend\Service\KlevuSettingsBuilder">
         <arguments>
             <argument name="klevuSettings" xsi:type="array">
+                <item name="powerUp" xsi:type="array">
+                    <item name="quick"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\QuickPowerUpProvider</item>
+                    <item name="landing"
+                          xsi:type="object">Klevu\FrontendSearch\Service\Provider\SrlpPowerUpProvider</item>
+                </item>
                 <item name="url" xsi:type="array">
                     <item name="search"
                           xsi:type="object">Klevu\FrontendSearch\Service\Provider\SearchUrlProvider</item>
@@ -301,4 +307,84 @@
         </arguments>
     </type>
 
+    <type name="Klevu\Frontend\ViewModel\CustomerGroupSuffix">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\QuickPowerUpProvider"
+                 type="Klevu\Frontend\Service\Provider\PowerUpProvider">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                </item>
+            </argument>
+            <argument name="delayPowerUpConditions" xsi:type="array">
+                <item name="delay_power_up_any_condition" xsi:type="array">
+                    <item name="is_group_pricing_enabled"
+                          xsi:type="object">Klevu\Frontend\Service\DelayPowerUpCondition\IsCustomerGroupPricingEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\Service\Provider\SrlpPowerUpProvider"
+                 type="Klevu\Frontend\Service\Provider\PowerUpProvider">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+            <argument name="delayPowerUpConditions" xsi:type="array">
+                <item name="delay_power_up_any_condition" xsi:type="array">
+                    <item name="is_group_pricing_enabled"
+                          xsi:type="object">Klevu\Frontend\Service\DelayPowerUpCondition\IsCustomerGroupPricingEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\ViewModel\Html\Head\CustomerGroupSuffixQuick"
+                 type="Klevu\Frontend\ViewModel\Html\Head\CustomerGroupSuffix">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_integrated"
+                      xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_quick_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsQuickSearchEnabledCondition</item>
+                </item>
+                <item name="klevu_group_pricing_enabled"
+                      xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsCustomerGroupPriceEnabledCondition</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Klevu\FrontendSearch\ViewModel\Html\Head\CustomerGroupSuffixSrlp"
+                 type="Klevu\Frontend\ViewModel\Html\Head\CustomerGroupSuffix">
+        <arguments>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_integrated"
+                      xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+                <item name="klevu_group_pricing_enabled"
+                      xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsCustomerGroupPriceEnabledCondition</item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>

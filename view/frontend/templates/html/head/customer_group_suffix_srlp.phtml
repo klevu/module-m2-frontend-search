@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * Copyright © Klevu Oy. All rights reserved. See LICENSE.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Klevu\Frontend\ViewModel\Html\Head\CustomerGroupSuffix;
+use Klevu\Frontend\ViewModel\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+/**
+ * @var Template $block
+ * @var CustomerGroupSuffix $customerGroupSuffixViewModel
+ * @var Escaper $escaperViewModel
+ * @var SecureHtmlRenderer $secureRenderer
+ */
+$customerGroupSuffixViewModel = $block->getCustomerGroupSuffixViewModel();
+$escaperViewModel = $block->getEscaperViewModel();
+$escaper = $escaperViewModel->getEscaper();
+?>
+
+<?php if ($customerGroupSuffixViewModel->isEnabled()): ?>
+    <?php
+    $scriptString = <<<script
+        klevu.settings.chains.initChain.add({
+            name: "addPriceSuffixToLandingQuery",
+            fire: function (data) {
+                if (klevu.getObjectPath(klevu.search, 'landing', false)
+                    && klevu.getGlobalSetting('flags.addPriceSuffixToQuery.landing', false)
+                    && typeof klevu_addPriceSuffixToQueryControl === 'object'
+                ) {
+                    klevu.search.landing.getScope().chains.request.control.addAfter(
+                        'initRequest',
+                        klevu_addPriceSuffixToQueryControl
+                    );
+                    klevu.setObjectPath(data, 'flags.addPriceSuffixToQuery.landing', false);
+                }
+            }
+        });
+        let landingSettingsUpdate = {};
+
+script;
+    ?>
+    <?php if ($customerGroupSuffixViewModel->isPowerUpRequired()): ?>
+        <?php
+        $scriptString .= <<<script
+        klevu.setObjectPath(landingSettingsUpdate, 'powerUp.landing',  true);
+
+script;
+        ?>
+    <?php endif; ?>
+    <?php
+    $scriptString .= <<<script
+        document.addEventListener(
+            '{$escaper->escapeJs($customerGroupSuffixViewModel->getCustomerDataLoadErrorEventName())}',
+            function () {
+                klevu(landingSettingsUpdate);
+            }
+        );
+        document.addEventListener(
+            '{$escaper->escapeJs($customerGroupSuffixViewModel->getCustomerDataLoadedEventName()) }',
+            function () {
+                klevu.setObjectPath(landingSettingsUpdate, 'flags.addPriceSuffixToQuery.landing',  true);
+                klevu(landingSettingsUpdate);
+            }
+        );
+
+script;
+    ?>
+    <?php
+    $script = <<<script
+    window._klvReady = window._klvReady || [];
+    window._klvReady.push(function() {
+        {$scriptString}
+    });
+
+script;
+    ?>
+    <?= $secureRenderer->renderTag(
+        tagName: 'script',
+        attributes: ['type' => 'text/javascript', 'id' => 'klevu_price_suffix_srlp'],
+        content: $script,
+        textContent: false
+    ) ?>
+<?php endif; ?>
