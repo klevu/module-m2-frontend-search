@@ -15,6 +15,7 @@ use Klevu\TestFixtures\Store\StoreTrait;
 use Klevu\TestFixtures\Traits\ObjectInstantiationTrait;
 use Klevu\TestFixtures\Traits\SetAuthKeysTrait;
 use Klevu\TestFixtures\Traits\TestImplementsInterfaceTrait;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,11 @@ class SearchFormTest extends TestCase
     use SetAuthKeysTrait;
     use StoreTrait;
     use TestImplementsInterfaceTrait;
+
+    /**
+     * @var ObjectManagerInterface|null
+     */
+    private ?ObjectManagerInterface $objectManager = null; // @phpstan-ignore-line
 
     /**
      * @return void
