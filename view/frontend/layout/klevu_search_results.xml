@@ -34,7 +34,12 @@
 
         <referenceBlock name="content">
             <block template="Klevu_FrontendSearch::search/results.phtml"
-                   name="klevu_frontend_search.search_results" />
+                   name="klevu_frontend_search.search_results">
+                <container name="klevu_frontend_search.search_results_container">
+                    <block name="klevu_frontend_search.search_results_cls"
+                           template="Klevu_FrontendSearch::search/results-cls.phtml"/>
+                </container>
+            </block>
         </referenceBlock>
     </body>
 </page>

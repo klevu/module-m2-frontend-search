@@ -8,7 +8,7 @@
         <referenceContainer name="Klevu_Frontend.before.body.end">
             <block name="Klevu_Frontend.js_includes_defer.search"
                    template="Klevu_Frontend::html/head/js_includes_defer.phtml"
-                   before="-">
+                   after="-">
                 <arguments>
                     <argument name="js_includes_view_model"
                               xsi:type="object">Klevu\FrontendSearch\ViewModel\Html\Head\JsIncludesQuick</argument>

@@ -30,16 +30,17 @@ class IsQuickSearchEnabledOutputTest extends AbstractController
     use WebsiteTrait;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private string $uri = 'catalogsearch/result'; // @phpstan-ignore-line
+    private ?string $uri = 'catalogsearch/result'; // @phpstan-ignore-line
     /**
-     * @var string
+     * @var string|null
      */
-    private string $pattern = "#const script = document.createElement\('script'\);"
-        . "\s*script\.src\s*=\s*'https:\/\/js\.klevu\.com\/theme\/default\/v2\/quick-search-theme\.js'\;"
-        . "\s*script\.type = 'text\/javascript'\;"
-        . "\s*document\.head\.append\(script\);#";
+    private ?string $pattern = "#let deferredScript = document.createElement\('script'\);"
+        . "\s*deferredScript\.type\s*=\s*'text\/javascript'\;"
+        . "\s*deferredScript.id\s*=\s*'klevu_quick_search'\;"
+        . "\s*deferredScript\.src\s*=\s*'https:\/\/js\.klevu\.com\/theme\/default\/v2\/quick-search-theme\.js'\;"
+        . "\s*document\.head\.append\(deferredScript\)#";
     /**
      * @var ObjectManagerInterface|null
      */
@@ -177,7 +178,7 @@ class IsQuickSearchEnabledOutputTest extends AbstractController
     public function test_QuickSearchJs_IsIncluded_WhenWebsiteIntegrated_QuickSearchEnabled(): void
     {
         $this->markTestSkipped('Skip until website integration is released');
-        $this->createWebsite();
+        $this->createWebsite(); // @phpstan-ignore-line
         $websiteFixture = $this->websiteFixturesPool->get('test_website');
         $this->createStore([
             'website_id' => $websiteFixture->getId(),

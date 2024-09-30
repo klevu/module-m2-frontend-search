@@ -28,9 +28,9 @@ class IndexControllerTest extends AbstractController
     use StoreTrait;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private string $uri = 'catalogsearch/result';
+    private ?string $uri = 'catalogsearch/result';
     /**
      * @var ObjectManagerInterface|null
      */
@@ -226,7 +226,7 @@ class IndexControllerTest extends AbstractController
         );
 
         // phpcs:ignore Generic.Files.LineLength.TooLong
-        $pattern = '#<script[.\s]*type="text&\#x2F;javascript"[.\s]*src="https&\#x3A;&\#x2F;&\#x2F;js\.klevu\.com&\#x2F;theme&\#x2F;default&\#x2F;v2&\#x2F;landing-page-theme\.js"[.\s]*>[.\s]*</script>#';
+        $pattern = '#<script[.\s]*type="text&\#x2F;javascript"[.\s]*id="klevu_search_landing"[.\s]*src="https&\#x3A;&\#x2F;&\#x2F;js\.klevu\.com&\#x2F;theme&\#x2F;default&\#x2F;v2&\#x2F;landing-page-theme\.js"[.\s]*>[.\s]*</script>#';
 
         $matches = [];
         preg_match(

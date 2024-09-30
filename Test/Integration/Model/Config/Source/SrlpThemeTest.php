@@ -22,9 +22,9 @@ class SrlpThemeTest extends TestCase
     use TestImplementsInterfaceTrait;
 
     /**
-     * @var ObjectManagerInterface
+     * @var ObjectManagerInterface|null
      */
-    private ObjectManagerInterface $objectManager; // @phpstan-ignore-line
+    private ?ObjectManagerInterface $objectManager = null; // @phpstan-ignore-line
 
     /**
      * @return void
