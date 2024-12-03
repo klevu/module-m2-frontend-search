@@ -36,11 +36,14 @@ class IsQuickSearchEnabledOutputTest extends AbstractController
     /**
      * @var string|null
      */
-    private ?string $pattern = "#let deferredScript = document.createElement\('script'\);"
+    private ?string $pattern = "#if \(typeof deferredScript === \"undefined\"\) \{"
+        . "\s*let deferredScript = null\;"
+        . "\s*\}"
+        . "\s*deferredScript = document\.createElement\('script'\)\;"
         . "\s*deferredScript\.type\s*=\s*'text\/javascript'\;"
-        . "\s*deferredScript.id\s*=\s*'klevu_quick_search'\;"
+        . "\s*deferredScript\.id\s*=\s*'klevu_quick_search'\;"
         . "\s*deferredScript\.src\s*=\s*'https:\/\/js\.klevu\.com\/theme\/default\/v2\/quick-search-theme\.js'\;"
-        . "\s*document\.head\.append\(deferredScript\)#";
+        . "\s*document\.head\.append\(deferredScript\)\;#";
     /**
      * @var ObjectManagerInterface|null
      */
