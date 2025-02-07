@@ -36,7 +36,7 @@ class IsQuickSearchEnabledOutputTest extends AbstractController
     /**
      * @var string|null
      */
-    private ?string $pattern = "#if \(typeof deferredScript === \"undefined\"\) \{"
+    private ?string $pattern = "#if \(typeof deferredScript === 'undefined'\) \{"
         . "\s*let deferredScript = null\;"
         . "\s*\}"
         . "\s*deferredScript = document\.createElement\('script'\)\;"
