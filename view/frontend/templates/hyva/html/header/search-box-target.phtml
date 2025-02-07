@@ -15,18 +15,17 @@ $klevuSearchBoxTargetId = $klevuSearchBoxTarget->getSearchBoxTargetId();
 
 <?php if ($klevuSearchBoxTargetId): ?>
     <?php
-    $scriptString = <<<script
+    $scriptString = "
 
     klevu.interactive(function () {
         const searchBoxTarget = document.getElementById('$klevuSearchBoxTargetId');
-        if ("undefined" !== typeof searchBoxTarget && searchBoxTarget) {
+        if ('undefined' !== typeof searchBoxTarget && searchBoxTarget) {
             let options = {};
             klevu.setObjectPath(options, 'search.searchBoxTarget', searchBoxTarget);
             klevu(options);
         }
     });
-
-script;
+    ";
     ?>
 
     <?= $secureRenderer->renderTag(

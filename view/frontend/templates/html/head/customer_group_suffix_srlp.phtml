@@ -24,9 +24,9 @@ $escaper = $escaperViewModel->getEscaper();
 
 <?php if ($customerGroupSuffixViewModel->isEnabled()): ?>
     <?php
-    $scriptString = <<<script
+    $scriptString = "
         klevu.settings.chains.initChain.add({
-            name: "addPriceSuffixToLandingQuery",
+            name: 'addPriceSuffixToLandingQuery',
             fire: function (data) {
                 if (klevu.getObjectPath(klevu.search, 'landing', false)
                     && klevu.getGlobalSetting('flags.addPriceSuffixToQuery.landing', false)
@@ -41,19 +41,17 @@ $escaper = $escaperViewModel->getEscaper();
             }
         });
         let landingSettingsUpdate = {};
-
-script;
+    ";
     ?>
     <?php if ($customerGroupSuffixViewModel->isPowerUpRequired()): ?>
         <?php
-        $scriptString .= <<<script
+        $scriptString .= "
         klevu.setObjectPath(landingSettingsUpdate, 'powerUp.landing',  true);
-
-script;
+        ";
         ?>
     <?php endif; ?>
     <?php
-    $scriptString .= <<<script
+    $scriptString .= "
         document.addEventListener(
             '{$escaper->escapeJs($customerGroupSuffixViewModel->getCustomerDataLoadErrorEventName())}',
             function () {
@@ -67,17 +65,16 @@ script;
                 klevu(landingSettingsUpdate);
             }
         );
-
-script;
+    ";
     ?>
     <?php
-    $script = <<<script
+    $script = "
     window._klvReady = window._klvReady || [];
     window._klvReady.push(function() {
         {$scriptString}
     });
 
-script;
+    ";
     ?>
     <?= $secureRenderer->renderTag(
         tagName: 'script',
