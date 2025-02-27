@@ -74,10 +74,11 @@ class DataProviderPluginTest extends TestCase
     /**
      * @magentoAppArea global
      */
-    public function testPlugin_DoesNotInterceptCalls_InGlobalArea(): void
+    public function testPlugin_InterceptCalls_InGlobalArea(): void
     {
         $pluginInfo = $this->getSystemConfigPluginInfo();
-        $this->assertArrayNotHasKey($this->pluginName, $pluginInfo);
+        $this->assertArrayHasKey($this->pluginName, $pluginInfo);
+        $this->assertSame(DataProviderPlugin::class, $pluginInfo[$this->pluginName]['instance']);
     }
 
     public function testPlugin_InterceptCalls_InFrontendArea(): void

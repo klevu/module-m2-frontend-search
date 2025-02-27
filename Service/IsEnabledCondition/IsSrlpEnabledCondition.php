@@ -44,10 +44,15 @@ class IsSrlpEnabledCondition implements IsEnabledConditionInterface
         $previewParam = $this->request->getParam(
             key: UpdateSearchResultsPageLayout::REQUEST_PARAM_KLEVU_SRLP_LAYOUT_PREVIEW,
         );
-        if ($previewParam === UpdateSearchResultsPageLayout::PARAM_KLEVU_THEME) {
-            return true;
+        if (
+            $previewParam
+            && $previewParam !== UpdateSearchResultsPageLayout::PARAM_KLEVU_THEME
+            && $this->themeProvider->isKlevuTheme()
+        ) {
+            return false;
         }
 
-        return $this->themeProvider->isKlevuTheme();
+        return $previewParam === UpdateSearchResultsPageLayout::PARAM_KLEVU_THEME
+        || $this->themeProvider->isKlevuTheme();
     }
 }

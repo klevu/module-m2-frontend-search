@@ -85,7 +85,7 @@ class IsSrlpEnabledConditionTest extends TestCase
      * @magentoConfigFixture default/klevu_frontend/srlp/theme 0
      * @magentoConfigFixture default_store klevu_frontend/srlp/theme 1
      */
-    public function testExecute_ReturnsTrue_WhenEnabled_RequestContainsNativePreview(): void
+    public function testExecute_ReturnsFalse_WhenEnabled_RequestContainsNativePreview(): void
     {
         $request = $this->objectManager->get(RequestInterface::class);
         $request->setParams([
@@ -94,6 +94,6 @@ class IsSrlpEnabledConditionTest extends TestCase
 
         /** @var IsSrlpEnabledCondition $service */
         $service = $this->instantiateTestObject();
-        $this->assertTrue(condition: $service->execute());
+        $this->assertFalse(condition: $service->execute());
     }
 }

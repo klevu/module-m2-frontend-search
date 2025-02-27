@@ -18,18 +18,6 @@
                               xsi:type="object">Klevu\Frontend\ViewModel\Escaper</argument>
                 </arguments>
             </block>
-
-            <block name="Klevu_FrontendSearch.customer_group_suffix_srlp"
-                   template="Klevu_FrontendSearch::html/head/customer_group_suffix_srlp.phtml"
-                   before="Klevu_Frontend.session_data"
-                   after="Klevu_Frontend.js_includes">
-                <arguments>
-                    <argument name="customer_group_suffix_view_model"
-                              xsi:type="object">Klevu\FrontendSearch\ViewModel\Html\Head\CustomerGroupSuffixSrlp</argument>
-                    <argument name="escaper_view_model"
-                              xsi:type="object">Klevu\Frontend\ViewModel\Escaper</argument>
-                </arguments>
-            </block>
         </referenceContainer>
 
         <referenceBlock name="content">
@@ -41,5 +29,19 @@
                 </container>
             </block>
         </referenceBlock>
+
+        <referenceContainer name="Klevu_Frontend.before.body.end">
+            <block name="Klevu_FrontendSearch.customer_group_suffix_srlp"
+                   template="Klevu_FrontendSearch::html/head/customer_group_suffix_srlp.phtml"
+                   before="Klevu_Frontend.session_data"
+                   after="Klevu_Frontend.customer_group_suffix">
+                <arguments>
+                    <argument name="customer_group_suffix_view_model"
+                              xsi:type="object">Klevu\FrontendSearch\ViewModel\Html\Head\CustomerGroupSuffixSrlp</argument>
+                    <argument name="escaper_view_model"
+                              xsi:type="object">Klevu\Frontend\ViewModel\Escaper</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
     </body>
 </page>

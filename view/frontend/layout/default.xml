@@ -19,6 +19,7 @@
 
             <block name="Klevu_FrontendSearch.customer_group_suffix_quick"
                    template="Klevu_FrontendSearch::html/head/customer_group_suffix_quick.phtml"
+                   before="Klevu_Frontend.session_data"
                    after="Klevu_Frontend.customer_group_suffix">
                 <arguments>
                     <argument name="customer_group_suffix_view_model"

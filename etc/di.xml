@@ -11,6 +11,20 @@
     <preference for="Klevu\FrontendSearch\Service\Provider\ThemeProviderInterface"
                 type="Klevu\FrontendSearch\Service\Provider\ThemeProvider"/>
 
+    <type name="Klevu\FrontendSearch\Controller\Result\Index">
+        <arguments>
+            <argument name="logger" xsi:type="object">Klevu\Indexing\Logger\Logger</argument>
+            <argument name="isEnabledConditions" xsi:type="array">
+                <item name="klevu_integrated"
+                      xsi:type="object">Klevu\Frontend\Service\IsEnabledCondition\IsStoreIntegratedCondition</item>
+                <item name="klevu_modules_enabled" xsi:type="array">
+                    <item name="klevu_srlp_enabled"
+                          xsi:type="object">Klevu\FrontendSearch\Service\IsEnabledCondition\IsSrlpEnabledCondition</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
     <virtualType name="Klevu\FrontendSearch\Service\Provider\QuickSearchEnabledProvider"
                  type="Klevu\Frontend\Service\Provider\SettingsProvider">
         <arguments>
