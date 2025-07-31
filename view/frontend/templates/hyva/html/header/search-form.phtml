@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
@@ -17,9 +18,11 @@ use Magento\Search\Helper\Data as SearchHelper;
 
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
 
+// phpcs:disable SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
 /** @var Escaper $escaper */
 /** @var Template $block */
 /** @var SearchHelper $helper */
+// phpcs:enable SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
 
 $helper = $this->helper(SearchHelper::class);
 
@@ -79,7 +82,7 @@ $klevuSearchBoxTargetId = $klevuSearchBoxTarget->getSearchBoxTargetId();
                 term = term || search.value;
                 if (term.length < this.minSearchLength) {
                     search.setCustomValidity('<?= $escaper->escapeJs(
-                        __('Minimum Search query length is %1', $helper->getMinQueryLength())
+                        __('Minimum Search query length is %1', $helper->getMinQueryLength()),
                     ) ?>');
                     search.reportValidity();
                 } else {

@@ -8,9 +8,11 @@ declare(strict_types=1);
 
 use Magento\Framework\View\Element\Template;
 
+// phpcs:disable SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
 /**
  * @var Template $block
  */
+// phpcs:enable SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
 ?>
 
 <?= $block->getChildHtml('klevu_frontend_search.search_results_container') ?>

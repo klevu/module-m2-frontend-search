@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\Theme\Model\ViewModelRegistry;
 use Klevu\FrontendSearch\ViewModel\Html\Head\SearchBoxTarget;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
+// phpcs:disable SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
 /**
  * @var SecureHtmlRenderer $secureRenderer
  * @var ViewModelRegistry $viewModels
  * @var SearchBoxTarget $klevuSearchBoxTarget
  */
+// phpcs:enable SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
 $klevuSearchBoxTarget = $viewModels->require(SearchBoxTarget::class);
 $klevuSearchBoxTargetId = $klevuSearchBoxTarget->getSearchBoxTargetId();
 ?>
@@ -32,7 +36,7 @@ $klevuSearchBoxTargetId = $klevuSearchBoxTarget->getSearchBoxTargetId();
         tagName: 'script',
         attributes: ['type' => 'text/javascript'],
         content: $scriptString,
-        textContent: false
+        textContent: false,
     ) ?>
 
 <?php endif ;?>

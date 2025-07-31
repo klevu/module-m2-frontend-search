@@ -6,8 +6,8 @@
 
 declare(strict_types=1);
 
-use Klevu\Frontend\ViewModel\Html\Head\CustomerGroupSuffix;
 use Klevu\Frontend\ViewModel\Escaper;
+use Klevu\Frontend\ViewModel\Html\Head\CustomerGroupSuffix;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
@@ -68,18 +68,18 @@ $escaper = $escaperViewModel->getEscaper();
     ";
     ?>
     <?php
-    $script = "
+    $script = '
     window._klvReady = window._klvReady || [];
     window._klvReady.push(function() {
-        {$scriptString}
+        ' . $scriptString . '
     });
 
-    ";
+    ';
     ?>
     <?= $secureRenderer->renderTag(
         tagName: 'script',
         attributes: ['type' => 'text/javascript', 'id' => 'klevu_price_suffix_srlp'],
         content: $script,
-        textContent: false
+        textContent: false,
     ) ?>
 <?php endif; ?>
