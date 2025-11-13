@@ -84,7 +84,7 @@ class UpdateSearchResultsPageLayout implements ObserverInterface
         $action = $observer->getData('full_action_name');
         $landing = 'catalogsearch';
         try {
-            $landingProvider = ltrim(string: $this->landingUrlProvider->get(), characters: '/');
+            $landingProvider = ltrim(string: $this->landingUrlProvider->getRoutePath(), characters: '/');
             $landingPaths = explode('/', $landingProvider);
             $landing .= isset($landingPaths[1])
                 ? '_' . $landingPaths[1]
