@@ -320,6 +320,15 @@ class LandingUrlProviderTest extends TestCase
             actual: $provider->get(),
             message: $message,
         );
+
+        $expectedRoute = 'catalogsearch';
+        if ($controllerName) {
+            $expectedRoute .= '/' . $controllerName;
+        }
+        $this->assertSame(
+            expected: $expectedRoute,
+            actual: $provider->getRoutePath(),
+        );
     }
 
     public function testGet_ReturnsLandingPageUrl_DiControllerName(): void

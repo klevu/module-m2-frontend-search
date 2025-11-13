@@ -13,14 +13,17 @@ use Klevu\FrontendSearch\Observer\UpdateSearchResultsPageLayout;
 use Klevu\TestFixtures\Store\StoreFixturesPool;
 use Klevu\TestFixtures\Store\StoreTrait;
 use Klevu\TestFixtures\Traits\ObjectInstantiationTrait;
+use Klevu\TestFixtures\Traits\SetAreaTrait;
 use Klevu\TestFixtures\Traits\SetAuthKeysTrait;
 use Klevu\TestFixtures\Traits\TestImplementsInterfaceTrait;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Event\ConfigInterface as EventConfig;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\LayoutInterface;
+use Magento\Store\Model\Store;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use TddWizard\Fixtures\Core\ConfigFixture;
@@ -32,6 +35,7 @@ use TddWizard\Fixtures\Core\ConfigFixture;
 class UpdateSearchResultsPageLayoutTest extends TestCase
 {
     use ObjectInstantiationTrait;
+    use SetAreaTrait;
     use SetAuthKeysTrait;
     use StoreTrait;
     use TestImplementsInterfaceTrait;
@@ -57,6 +61,8 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
         $this->interfaceFqcn = ObserverInterface::class;
         $this->objectManager = Bootstrap::getObjectManager();
         $this->storeFixturesPool = $this->objectManager->get(StoreFixturesPool::class);
+
+        $this->setArea(Area::AREA_FRONTEND);
     }
 
     /**
@@ -70,8 +76,98 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
         $this->storeFixturesPool->rollback();
     }
 
-    public function testUpdateSearchResultsPageLayoutTestObserver_IsConfigured(): void
+    /**
+     * @return mixed[][]
+     */
+    public static function dataProvider_configVariations(): array
     {
+        return [
+            '000' => [
+                'use_seo_rewrites' => false,
+                'subdirectory' => '',
+                'useStoreCodeInUrl' => false,
+            ],
+            '001' => [
+                'use_seo_rewrites' => false,
+                'subdirectory' => '',
+                'useStoreCodeInUrl' => true,
+            ],
+            '010' => [
+                'use_seo_rewrites' => false,
+                'subdirectory' => 'phpunit-test/',
+                'useStoreCodeInUrl' => false,
+            ],
+            '011' => [
+                'use_seo_rewrites' => false,
+                'subdirectory' => 'phpunit-test/',
+                'useStoreCodeInUrl' => true,
+            ],
+            '100' => [
+                'use_seo_rewrites' => true,
+                'subdirectory' => '',
+                'useStoreCodeInUrl' => false,
+            ],
+            '101' => [
+                'use_seo_rewrites' => true,
+                'subdirectory' => '',
+                'useStoreCodeInUrl' => true,
+            ],
+            '110' => [
+                'use_seo_rewrites' => true,
+                'subdirectory' => 'phpunit-test/',
+                'useStoreCodeInUrl' => false,
+            ],
+            '111' => [
+                'use_seo_rewrites' => true,
+                'subdirectory' => 'phpunit-test/',
+                'useStoreCodeInUrl' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     */
+    public function testUpdateSearchResultsPageLayoutTestObserver_IsConfigured(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $observerConfig = $this->objectManager->create(type: EventConfig::class);
         $observers = $observerConfig->getObservers(eventName: self::EVENT_NAME_LAYOUT_LOAD_BEFORE);
 
@@ -83,11 +179,51 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     *
      * @magentoConfigFixture default/klevu_frontend/category_navigation/theme 1
      * @magentoConfigFixture default_store klevu_frontend/category_navigation/theme 1
      */
-    public function testHandleNotAddedForOtherRoutes(): void
-    {
+    public function testHandleNotAddedForOtherRoutes(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $layout = $this->objectManager->get(type: LayoutInterface::class);
 
         $request = $this->setRequest(controller: 'index');
@@ -106,11 +242,51 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     *
      * @magentoConfigFixture default/klevu_frontend/srlp/theme 0
      * @magentoConfigFixture default_store klevu_frontend/srlp/theme 0
      */
-    public function testMagentoLayout_KlevuThemeDisabledInAdmin(): void
-    {
+    public function testMagentoLayout_KlevuThemeDisabledInAdmin(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $layout = $this->objectManager->get(type: LayoutInterface::class);
 
         $request = $this->setRequest();
@@ -133,11 +309,51 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     *
      * @magentoConfigFixture default/klevu_frontend/srlp/theme 1
      * @magentoConfigFixture default_store klevu_frontend/srlp/theme 1
      */
-    public function testMagentoLayout_KlevuThemeEnabledInAdmin_NotIntegrated(): void
-    {
+    public function testMagentoLayout_KlevuThemeEnabledInAdmin_NotIntegrated(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $layout = $this->objectManager->get(type: LayoutInterface::class);
 
         $request = $this->setRequest();
@@ -159,8 +375,49 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
         );
     }
 
-    public function testMagentoLayout_KlevuThemeEnabledInAdmin_Integrated(): void
-    {
+    /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     */
+    public function testMagentoLayout_KlevuThemeEnabledInAdmin_Integrated(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $this->createStore();
         $storeFixture = $this->storeFixturesPool->get('test_store');
         $scopeProvider = $this->objectManager->get(ScopeProviderInterface::class);
@@ -199,11 +456,51 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     *
      * @magentoConfigFixture default/klevu_frontend/srlp/theme 0
      * @magentoConfigFixture default_store klevu_frontend/srlp/theme 0
      */
-    public function testPreviewKlevuLayout_KlevuThemeDisabledInAdmin_RequestParam_NotIntegrated(): void
-    {
+    public function testPreviewKlevuLayout_KlevuThemeDisabledInAdmin_RequestParam_NotIntegrated(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $layout = $this->objectManager->get(type: LayoutInterface::class);
 
         $request = $this->setRequest();
@@ -229,11 +526,51 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     *
      * @magentoConfigFixture default/klevu_frontend/srlp/theme 0
      * @magentoConfigFixture klevu_test_store_1_store klevu_frontend/srlp/theme 0
      */
-    public function testPreviewKlevuLayout_KlevuThemeDisabledInAdmin_RequestParam_Integrated(): void
-    {
+    public function testPreviewKlevuLayout_KlevuThemeDisabledInAdmin_RequestParam_Integrated(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $this->createStore();
         $store = $this->storeFixturesPool->get('test_store');
         $scopeProvider = $this->objectManager->get(ScopeProviderInterface::class);
@@ -270,11 +607,51 @@ class UpdateSearchResultsPageLayoutTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProvider_configVariations
+     *
+     * @param bool $useSeoRewrites
+     * @param string $subdirectory
+     * @param bool $useStoreCodeInUrl
+     *
+     * @return void
+     *
      * @magentoConfigFixture default/klevu_frontend/srlp/theme 1
      * @magentoConfigFixture default_store klevu_frontend/srlp/theme 1
      */
-    public function testPreviewMagentoLayout_KlevuThemeEnabledInAdmin_RequestParam(): void
-    {
+    public function testPreviewMagentoLayout_KlevuThemeEnabledInAdmin_RequestParam(
+        bool $useSeoRewrites,
+        string $subdirectory,
+        bool $useStoreCodeInUrl,
+    ): void {
+        ConfigFixture::setGlobal(
+            path: 'web/seo/use_rewrites',
+            value: $useSeoRewrites ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/url/use_store',
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: Store::XML_PATH_STORE_IN_URL,
+            value: $useStoreCodeInUrl ? '1' : '0',
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_url',
+            value: 'http://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/unsecure/base_link_url',
+            value: 'http://link.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_url',
+            value: 'https://base.domain-global.test/' . $subdirectory,
+        );
+        ConfigFixture::setGlobal(
+            path: 'web/secure/base_link_url',
+            value: 'https://link.domain-global.test/' . $subdirectory,
+        );
+
         $layout = $this->objectManager->get(type: LayoutInterface::class);
 
         $request = $this->setRequest();

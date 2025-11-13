@@ -81,6 +81,21 @@ class LandingUrlProvider implements SettingsProviderInterface
         $urlBuilder = $this->urlBuilderFactory->create();
         $urlBuilder->setScope($currentStore);
 
+        $url = $urlBuilder->getUrl(
+            routePath: $this->getRoutePath(),
+            routeParams: [],
+        );
+
+        $parsedUrl = $this->uri->parse($url);
+
+        return $parsedUrl->getPath();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoutePath(): string
+    {
         $routePath = $this->config->getRouteFrontName(
             routeId: self::ROUTE_ID_SRLP,
             scope: self::ROUTE_SCOPE_FRONTNAME,
@@ -89,13 +104,6 @@ class LandingUrlProvider implements SettingsProviderInterface
             $routePath .= '/' . $this->controllerName;
         }
 
-        $url = $urlBuilder->getUrl(
-            routePath: $routePath,
-            routeParams: [],
-        );
-
-        $parsedUrl = $this->uri->parse($url);
-
-        return $parsedUrl->getPath();
+        return $routePath;
     }
 }
